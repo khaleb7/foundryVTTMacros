@@ -1,0 +1,14 @@
+// Define how many we roll, how many we keep, and how many we
+// drop
+const dRoll = prompt("Dice to Roll?", "1");
+const dKeep = prompt("Dice to Keep?", dRoll);
+const dDrop = prompt("Dice to Drop?", "0");
+
+console.log('new roll');
+let r = new Roll(`${dRoll}d6kh${dKeep}kl${dKeep - dDrop}`);
+
+r.toMessage({
+  flavor: `${actor.name} makes a check...`,
+  content: 'oh no',
+  speaker: ChatMessage.getSpeaker({token: token}),
+});
