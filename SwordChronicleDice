@@ -1,14 +1,57 @@
-// Define how many we roll, how many we keep, and how many we
-// drop
-const dRoll = prompt("Dice to Roll?", "1");
-const dKeep = prompt("Dice to Keep?", dRoll);
-const dDrop = prompt("Dice to Drop?", "0");
+function rollDice(dRoll,dKeep,dDrop){
+// Prompt is dead
 
 console.log('new roll');
 let r = new Roll(`${dRoll}d6kh${dKeep}kl${dKeep - dDrop}`);
 
 r.toMessage({
   flavor: `${actor.name} makes a check...`,
-  content: 'oh no',
   speaker: ChatMessage.getSpeaker({token: token}),
 });
+}
+
+
+let d = new Dialog({
+  title: ' Sample Dice Pool',
+  content: `
+    <form class="flexcol">
+      <div class="form-group">
+        <label for="firstInput">Roll</label>
+        <input type="text" name="firstInput" placeholder="1">
+        <label for="secondInput">Keep</label>
+        <input type="text" name="secondInput" placeholder="All">
+       <label for="thirdInput">Drop</label>
+        <input type="text" name="thirdInput" placeholder="All">
+
+      </div>
+
+    </form>
+  `,
+  buttons: {
+    no: {
+      icon: '<i class="fas fa-times"></i>',
+      label: 'Cancel'
+    },
+    yes: {
+      icon: '<i class="fas fa-check"></i>',
+      label: 'Roll',
+      callback: (html) => {
+        let val1 = html.find('input[name="firstInput"]').val();
+        let val2 = html.find('input[name="secondInput"]').val();
+        let val3 = html.find('input[name="thirdInput"]').val();
+        
+        // new Roll(`${val1}d6`).toMessage();
+        if (val1 === "") {val1 = 1};
+        if (val2 === "") { val2 = val1 };
+        if (val3 === "") { val3 = 0 };
+        console.log(`DEBUG 1-${val1} 2-${val2} 3-${val3}`);
+        rollDice(val1,val2,val3);
+      }
+    },
+  },
+  default: 'yes',
+  close: () => {
+    console.log('Example Dialog Closed');
+  }
+});
+d.render(true);
