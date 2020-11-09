@@ -1,0 +1,76 @@
+// Function for the exploding/imploding Roll
+// This is Btaylor's work, not my own...
+const aDice = (sName,sValue,sMod) => {
+
+let vsd_roll = new Roll("1d100").roll();
+let exploded_roll = new Roll("1d100x>95").roll();
+
+if (vsd_roll.result > 95 || vsd_roll.result < 6) {
+  exploded_roll._dice.forEach(die => vsd_roll._dice.push(die));
+  exploded_roll.terms.forEach(term => vsd_roll.terms.push(term));
+}
+
+if (vsd_roll.result > 95) {
+  vsd_roll._total += exploded_roll.total;
+}
+else if (vsd_roll.result < 6) {
+  vsd_roll._total -= exploded_roll.total;
+}
+
+const oRoll = vsd_roll._total;
+vsd_roll._total += sValue;
+vsd_roll._total += sMod;
+vsd_roll._formula = "Roll:" + Number(oRoll) + " Skill:" + Number(sValue) + " Modifiers:" + Number(sMod);
+
+
+vsd_roll.toMessage({
+  flavor: "Open Ended Roll for " + sName + " skill!"
+});
+}
+
+
+
+let d = new Dialog({
+  title: 'Against the Darkmaster Modifier',
+  content: `
+    <form class="flexcol">
+      <div class="form-group">
+        <label for="firstInput">Skill Name</label>
+        <input type="text" name="firstInput" placeholder="Skill Check">
+       </div>
+<div class="form-group">
+        <label for="secondInput">Skill Level</label>
+        <input type="text" name="secondInput" placeholder="0">
+       </div>
+<div class="form-group">
+        <label for="thirdInput">Modifiers</label>
+        <input type="text" name="thirdInput" placeholder="0">
+       </div>
+
+    </form>
+  `,
+  buttons: {
+    no: {
+      icon: '<i class="fas fa-times"></i>',
+      label: 'Cancel'
+    },
+    yes: {
+      icon: '<i class="fas fa-check"></i>',
+      label: 'Roll',
+      callback: (html) => {
+        let sName = html.find('input[name="firstInput"]').val();
+        let sValue = html.find('input[name="secondInput"]').val();
+        let sMod = html.find('input[name="thirdInput"]').val();
+        // sValue = Number(sMod) + Number(sValue);
+       
+        aDice(sName,Number(sValue),Number(sMod));
+        console.log(sName,sValue,sMod);
+      }
+    },
+  },
+  default: 'yes',
+  close: () => {
+    console.log('Example Dialog Closed');
+  }
+});
+d.render(true);
