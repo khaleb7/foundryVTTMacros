@@ -1,0 +1,101 @@
+// Rolling number of dice
+const jDice = (number) => {
+    let i;
+    let dArray=[];
+    for (i=0; i < number; i++) {
+    let randomNumber =Math.round(Math.random()*5)+1
+    dArray.push(randomNumber);
+    
+  }
+// Return an array of results
+ return dArray
+}
+
+const cDice = (dArray) => { 
+let count = 0;
+// Create an empty array, iterate through the dice returned and //increment counts in the tArray
+// position 0 is number of ones, 1 is number of twos... etc.
+let tArray = [0,0,0,0,0,0,0,0,0,0];
+for(var i = 0; i < dArray.length; ++i){
+    if(dArray[i] == 1)
+        {  ++tArray[0] } 
+    else if(dArray[i] == 2)
+        { ++tArray[1] }
+    else if(dArray[i] == 3)
+        {  ++tArray[2]}
+    else if(dArray[i] == 4)
+        {  ++tArray[3]}
+    else if(dArray[i] == 5)
+        {  ++tArray[4]}
+   else if(dArray[i] == 6)
+        {  ++tArray[5]}
+   else if(dArray[i] == 7)
+        {  ++tArray[6]}
+   else if(dArray[i] == 8)
+        {  ++tArray[7]}
+   else if(dArray[i] == 9)
+        {  ++tArray[8]}
+   else if(dArray[i] == 10)
+        {  ++tArray[9]}
+
+
+
+
+       }
+return tArray
+}
+const messageParse = (lArray) => {
+
+let bodyMessage = (` Roll Summary: <br> ${lArray[9]}X10 <br>${lArray[8]}X9 <br>${lArray[7]}X8 <br>${lArray[6]}X7 <br>${lArray[5]}X6  <br>${lArray[4]}X5  <br>${lArray[3]}X4  <br>${lArray[2]}X3  <br>${lArray[1]}X2  <br>${lArray[0]}X1 `)
+
+console.log(bodyMessage);
+let chatData = {
+user: game.user._id,
+speaker: ChatMessage.getSpeaker(),
+content: bodyMessage};
+
+ChatMessage.create(chatData, {});
+
+
+}
+
+
+
+let d = new Dialog({
+  title: ' Sample Dice Pool',
+  content: `
+    <form class="flexcol">
+      <div class="form-group">
+        <label for="firstInput">Roll</label>
+        <input type="text" name="firstInput" placeholder="1">
+       </div>
+
+    </form>
+  `,
+  buttons: {
+    no: {
+      icon: '<i class="fas fa-times"></i>',
+      label: 'Cancel'
+    },
+    yes: {
+      icon: '<i class="fas fa-check"></i>',
+      label: 'Roll',
+      callback: (html) => {
+        let val1 = html.find('input[name="firstInput"]').val();
+   
+        // new Roll(`${val1}d10`).toMessage();
+        if (val1 === "") {val1 = 1};
+        console.log(`DEBUG 1-${val1}`);
+        let nDice = val1;
+        let fArray = jDice(nDice);
+        console.table (cDice(fArray))
+        messageParse(cDice(fArray));
+      }
+    },
+  },
+  default: 'yes',
+  close: () => {
+    console.log('Example Dialog Closed');
+  }
+});
+d.render(true);
